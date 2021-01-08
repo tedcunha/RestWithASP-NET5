@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestWithASP-NET5", "RestWithASP-NET5\RestWithASP-NET5.csproj", "{4BFA1E58-A664-4127-8256-0E01AB69CD6F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api.Application", "Api.Application", "{0470BC62-5673-4759-BF3F-9CB25262EF3B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api.Services", "Api.Services", "{0470BC62-5673-4759-BF3F-9CB25262EF3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
