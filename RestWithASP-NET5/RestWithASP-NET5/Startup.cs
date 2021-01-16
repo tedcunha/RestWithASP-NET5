@@ -2,10 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RestWithASP_NET5.Model.Context;
+using RestWithASP_NET5.Services;
+using RestWithASP_NET5.Services.Implementation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +31,13 @@ namespace RestWithASP_NET5
         {
 
             services.AddControllers();
+
+            //Connetction com o Banco de Dados MySQL
+            var connectionMySql = Configuration["MySQLConnection:MySQLConnectionString"];
+            services.AddDbContext<MySqlContext>(options => options.UseMySql(connectionMySql));
+
+            // Para Injeção de Dependencia
+            services.AddScoped<IUsuarioService, PresonServiceImplementation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

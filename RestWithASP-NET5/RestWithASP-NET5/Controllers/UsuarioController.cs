@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using RestWithASP_NET5.Model;
+using RestWithASP_NET5.Services;
 
 namespace RestWithASP_NET5.Controllers
 {
@@ -13,16 +10,57 @@ namespace RestWithASP_NET5.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly ILogger<UsuarioController> _logger;
+        private IUsuarioService _usuarioService;
 
-        public UsuarioController(ILogger<UsuarioController> logger)
+        public UsuarioController(ILogger<UsuarioController> logger,
+                                 IUsuarioService usuarioService)
         {
             _logger = logger;
+            _usuarioService = usuarioService;
         }
 
-        [HttpGet("somar/{firstNumber}")]
-        public IActionResult GetSomar(string firstNumber)
+        [HttpGet]
+        public IActionResult Get()
         {
-            return BadRequest("Invalid Imput");
+            return Ok(_usuarioService.FindAll());
+        }
+
+        [HttpGet("{Id}")]
+        public IActionResult Get(int Id)
+        {
+            var usuario = _usuarioService.FindByID(Id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            return Ok(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] UsuarioModel usuarioModel)
+        {
+            if (usuarioModel == null)
+            {
+                return BadRequest();
+            }
+            return Ok(_usuarioService.Create(usuarioModel));
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] UsuarioModel usuarioModel)
+        {
+            if (usuarioModel == null)
+            {
+                return BadRequest();
+            }
+            return Ok(_usuarioService.Update(usuarioModel));
+        }
+
+        [HttpDelete("{Id}")]
+        public IActionResult Delete(int Id)
+        {
+            _usuarioService.Delete(Id);
+            return NoContent();
         }
 
     }
