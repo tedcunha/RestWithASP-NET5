@@ -19,19 +19,38 @@ namespace RestWithASP_NET5.Services.Implementation
 
         public UsuarioModel Create(UsuarioModel usuarioModel)
         {
-            return new UsuarioModel
+            try
             {
-                Id = 1,
-                Nome = usuarioModel.Nome,
-                SobreNome = usuarioModel.SobreNome,
-                Endereco = usuarioModel.Endereco,
-                Genero = usuarioModel.Genero
-            };
+                _context.Add(usuarioModel);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+
+            return usuarioModel;
         }
 
-        public void Delete(int Id)
+        public bool Delete(int Id)
         {
-            
+            bool valido = false;
+            var result = _context.UsuarioModels.SingleOrDefault(p => p.Id == Id);
+            if (result != null)
+            {
+                try
+                {
+                    _context.UsuarioModels.Remove(result);
+                    _context.SaveChanges();
+                    valido = true;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return valido;
         }
 
         public List<UsuarioModel> FindAll()
@@ -41,26 +60,36 @@ namespace RestWithASP_NET5.Services.Implementation
 
         public UsuarioModel FindByID(int Id)
         {
-            return new UsuarioModel
-            {
-                Id = Id,
-                Nome = "Ricardo",
-                SobreNome = "Cunha",
-                Endereco = "Rua Tiradentes, 1837 - Bloco 11 / Apto 71, Dta Terezinha, SBC",
-                Genero = "Masculino"
-            };
+            return _context.UsuarioModels.SingleOrDefault(p => p.Id == Id);
         }
 
         public UsuarioModel Update(UsuarioModel usuarioModel)
         {
-            return new UsuarioModel
+            if (!Exists(usuarioModel.Id))
             {
-                Id = 1,
-                Nome = usuarioModel.Nome,
-                SobreNome = usuarioModel.SobreNome,
-                Endereco = usuarioModel.Endereco,
-                Genero = usuarioModel.Genero
-            };
+                return new UsuarioModel();
+            }
+
+            var result = _context.UsuarioModels.SingleOrDefault(p => p.Id == usuarioModel.Id);
+
+            if (result != null)
+            {
+                try
+                {
+                    _context.Entry(result).CurrentValues.SetValues(usuarioModel);
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return usuarioModel;
+        }
+
+        private bool Exists(int Id)
+        {
+            return _context.UsuarioModels.Any(p => p.Id == Id);
         }
     }
 }

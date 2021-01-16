@@ -59,8 +59,13 @@ namespace RestWithASP_NET5.Controllers
         [HttpDelete("{Id}")]
         public IActionResult Delete(int Id)
         {
-            _usuarioService.Delete(Id);
-            return NoContent();
+            var result = _usuarioService.Delete(Id);
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok($"Registro {Id.ToString()} excluido com sucesso.");
         }
 
     }

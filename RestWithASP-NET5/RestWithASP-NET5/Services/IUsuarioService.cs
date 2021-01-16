@@ -9,6 +9,6 @@ namespace RestWithASP_NET5.Services
         UsuarioModel FindByID(int Id);
         List<UsuarioModel> FindAll();
         UsuarioModel Update(UsuarioModel usuarioModel);
-        void Delete(int Id);
+        bool Delete(int Id);
     }
 }
