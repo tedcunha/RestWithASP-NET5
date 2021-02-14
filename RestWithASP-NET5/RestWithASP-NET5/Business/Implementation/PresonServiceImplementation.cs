@@ -1,20 +1,17 @@
 ﻿using RestWithASP_NET5.Model;
-using RestWithASP_NET5.Model.Context;
 using RestWithASP_NET5.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RestWithASP_NET5.Business.Implementation
 {
     public class PresonBusinessImplementation : IUsuarioBusiness
     {
 
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IRepository<UsuarioModel> _usuarioRepository;
 
-        public PresonBusinessImplementation(IUsuarioRepository usuarioRepository)
+        public PresonBusinessImplementation(IRepository<UsuarioModel> usuariorepository)
         {
-            _usuarioRepository = usuarioRepository;
+            _usuarioRepository = usuariorepository;
         }
 
         public UsuarioModel Create(UsuarioModel usuarioModel)

@@ -17,5 +17,6 @@ namespace RestWithASP_NET5.Model.Context
             
         }
         public DbSet<UsuarioModel> UsuarioModels { get; set; }
+        public DbSet<LivrosModel> LivrosModels { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using RestWithASP_NET5.Repository;
 using RestWithASP_NET5.Repository.Implementation;
 using Serilog;
 using System.Collections.Generic;
+using RestWithASP_NET5.Repository.Generic;
 
 namespace RestWithASP_NET5
 {
@@ -49,7 +50,9 @@ namespace RestWithASP_NET5
 
             // Para Injeção de Dependencia
             services.AddScoped<IUsuarioBusiness, PresonBusinessImplementation>();
-            services.AddScoped<IUsuarioRepository, PresonRepositoryImplementation>();
+            services.AddScoped<ILivrosBusiness, LivrosBusinessImplementation>();
+
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
         }
 
 
