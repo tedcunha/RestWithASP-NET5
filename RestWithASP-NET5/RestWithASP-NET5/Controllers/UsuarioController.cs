@@ -1,34 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestWithASP_NET5.Model;
-using RestWithASP_NET5.Services;
+using RestWithASP_NET5.Business;
 
 namespace RestWithASP_NET5.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1")]
+    [Route("api/[controller]/v{version:ApiVersion}")]
     [ApiController]
     public class UsuarioController : ControllerBase
     {
         private readonly ILogger<UsuarioController> _logger;
-        private IUsuarioService _usuarioService;
+        private IUsuarioBusiness _usuarioBusiness;
 
         public UsuarioController(ILogger<UsuarioController> logger,
-                                 IUsuarioService usuarioService)
+                                 IUsuarioBusiness usuarioBusiness)
         {
             _logger = logger;
-            _usuarioService = usuarioService;
+            _usuarioBusiness = usuarioBusiness;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_usuarioService.FindAll());
+            return Ok(_usuarioBusiness.FindAll());
         }
 
         [HttpGet("{Id}")]
         public IActionResult Get(int Id)
         {
-            var usuario = _usuarioService.FindByID(Id);
+            var usuario = _usuarioBusiness.FindByID(Id);
             if (usuario == null)
             {
                 return NotFound();
@@ -43,7 +44,7 @@ namespace RestWithASP_NET5.Controllers
             {
                 return BadRequest();
             }
-            return Ok(_usuarioService.Create(usuarioModel));
+            return Ok(_usuarioBusiness.Create(usuarioModel));
         }
 
         [HttpPut]
@@ -53,13 +54,13 @@ namespace RestWithASP_NET5.Controllers
             {
                 return BadRequest();
             }
-            return Ok(_usuarioService.Update(usuarioModel));
+            return Ok(_usuarioBusiness.Update(usuarioModel));
         }
 
         [HttpDelete("{Id}")]
         public IActionResult Delete(int Id)
         {
-            var result = _usuarioService.Delete(Id);
+            var result = _usuarioBusiness.Delete(Id);
             if (!result)
             {
                 return BadRequest();

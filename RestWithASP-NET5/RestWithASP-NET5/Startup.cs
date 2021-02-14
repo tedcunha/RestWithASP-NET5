@@ -1,30 +1,32 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using RestWithASP_NET5.Model.Context;
-using RestWithASP_NET5.Services;
-using RestWithASP_NET5.Services.Implementation;
-using System;
+using RestWithASP_NET5.Business;
+using RestWithASP_NET5.Business.Implementation;
+using RestWithASP_NET5.Repository;
+using RestWithASP_NET5.Repository.Implementation;
+using Serilog;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RestWithASP_NET5
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration,IWebHostEnvironment environment)
+        {
+            Configuration = configuration;
+            Environment = environment;
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,9 +38,20 @@ namespace RestWithASP_NET5
             var connectionMySql = Configuration["MySQLConnection:MySQLConnectionString"];
             services.AddDbContext<MySqlContext>(options => options.UseMySql(connectionMySql));
 
+            // Criando o Migrations (Para os Scripts sempre usar o Utf8) 
+            if (Environment.IsDevelopment())
+            {
+                MigrateDatabase(connectionMySql);
+            }
+
+            // Versionamento de API
+            services.AddApiVersioning();
+
             // Para Injeção de Dependencia
-            services.AddScoped<IUsuarioService, PresonServiceImplementation>();
+            services.AddScoped<IUsuarioBusiness, PresonBusinessImplementation>();
+            services.AddScoped<IUsuarioRepository, PresonRepositoryImplementation>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,6 +71,27 @@ namespace RestWithASP_NET5
             {
                 endpoints.MapControllers();
             });
+        }
+
+        // Metodo para Migrations
+        private void MigrateDatabase(string connectionMySql)
+        {
+            try
+            {
+                var evolveConnection = new MySql.Data.MySqlClient.MySqlConnection(connectionMySql);
+                var evolve = new Evolve.Evolve(evolveConnection, msg => Log.Information(msg))
+                {
+                    Locations = new List<string> { "db/migrations", "db/dataset" },
+                    IsEraseDisabled = true,
+                };
+                evolve.Migrate();
+
+            }
+            catch (System.Exception ex)
+            {
+                Log.Error("Database Migration failed", ex);
+                throw;
+            }
         }
     }
 }

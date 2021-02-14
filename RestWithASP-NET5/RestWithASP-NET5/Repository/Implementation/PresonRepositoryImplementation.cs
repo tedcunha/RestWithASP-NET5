@@ -3,16 +3,14 @@ using RestWithASP_NET5.Model.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace RestWithASP_NET5.Services.Implementation
+namespace RestWithASP_NET5.Repository.Implementation
 {
-    public class PresonServiceImplementation : IUsuarioService
+    public class PresonRepositoryImplementation : IUsuarioRepository
     {
         private MySqlContext _context;
 
-        public PresonServiceImplementation(MySqlContext context)
+        public PresonRepositoryImplementation(MySqlContext context)
         {
             _context = context;
         }
@@ -67,7 +65,7 @@ namespace RestWithASP_NET5.Services.Implementation
         {
             if (!Exists(usuarioModel.Id))
             {
-                return new UsuarioModel();
+                return null;
             }
 
             var result = _context.UsuarioModels.SingleOrDefault(p => p.Id == usuarioModel.Id);
@@ -87,7 +85,7 @@ namespace RestWithASP_NET5.Services.Implementation
             return usuarioModel;
         }
 
-        private bool Exists(int Id)
+        public bool Exists(int Id)
         {
             return _context.UsuarioModels.Any(p => p.Id == Id);
         }
