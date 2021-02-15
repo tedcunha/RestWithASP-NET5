@@ -44,6 +44,17 @@ namespace RestWithASP_NET5
                 MigrateDatabase(connectionMySql);
             }
 
+            //Para poder retornar XML (Pode ser Cpmentado)
+            // Quando o RespectBrowserAcceptHeader = true traz XML, quando false traz json
+            services.AddMvc(options => 
+            {
+                options.RespectBrowserAcceptHeader = false;
+                options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+                options.FormatterMappings.SetMediaTypeMappingForFormat("json", "application/json");
+            }).AddXmlSerializerFormatters();
+            
+            
+            
             // Versionamento de API
             services.AddApiVersioning();
 
