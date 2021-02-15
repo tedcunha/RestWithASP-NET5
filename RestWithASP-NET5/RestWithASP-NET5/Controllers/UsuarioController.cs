@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RestWithASP_NET5.Model;
 using RestWithASP_NET5.Business;
+using RestWithASP_NET5.Data.VO;
 
 namespace RestWithASP_NET5.Controllers
 {
@@ -38,23 +38,23 @@ namespace RestWithASP_NET5.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] UsuarioModel usuarioModel)
+        public IActionResult Post([FromBody] UsuarioVO UsuarioVO)
         {
-            if (usuarioModel == null)
+            if (UsuarioVO == null)
             {
                 return BadRequest();
             }
-            return Ok(_usuarioBusiness.Create(usuarioModel));
+            return Ok(_usuarioBusiness.Create(UsuarioVO));
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] UsuarioModel usuarioModel)
+        public IActionResult Put([FromBody] UsuarioVO UsuarioVO)
         {
-            if (usuarioModel == null)
+            if (UsuarioVO == null)
             {
                 return BadRequest();
             }
-            return Ok(_usuarioBusiness.Update(usuarioModel));
+            return Ok(_usuarioBusiness.Update(UsuarioVO));
         }
 
         [HttpDelete("{Id}")]
@@ -65,9 +65,7 @@ namespace RestWithASP_NET5.Controllers
             {
                 return BadRequest();
             }
-
             return Ok($"Registro {Id.ToString()} excluido com sucesso.");
         }
-
     }
 }

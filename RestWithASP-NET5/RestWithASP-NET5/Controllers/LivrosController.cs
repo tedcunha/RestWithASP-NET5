@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RestWithASP_NET5.Model;
 using RestWithASP_NET5.Business;
+using RestWithASP_NET5.Data.VO;
 
 namespace RestWithASP_NET5.Controllers
 {
@@ -38,23 +39,23 @@ namespace RestWithASP_NET5.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] LivrosModel livrosModel)
+        public IActionResult Post([FromBody] LivrosVO LivrosVO)
         {
-            if (livrosModel == null)
+            if (LivrosVO == null)
             {
                 return BadRequest();
             }
-            return Ok(_livrosBusiness.Create(livrosModel));
+            return Ok(_livrosBusiness.Create(LivrosVO));
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] LivrosModel livrosModel)
+        public IActionResult Put([FromBody] LivrosVO LivrosVO)
         {
-            if (livrosModel == null)
+            if (LivrosVO == null)
             {
                 return BadRequest();
             }
-            return Ok(_livrosBusiness.Update(livrosModel));
+            return Ok(_livrosBusiness.Update(LivrosVO));
         }
 
         [HttpDelete("{Id}")]

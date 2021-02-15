@@ -1,4 +1,6 @@
-﻿using RestWithASP_NET5.Model;
+﻿using RestWithASP_NET5.Data.Converter.Implementations;
+using RestWithASP_NET5.Data.VO;
+using RestWithASP_NET5.Model;
 using RestWithASP_NET5.Repository;
 using System.Collections.Generic;
 
@@ -8,15 +10,19 @@ namespace RestWithASP_NET5.Business.Implementation
     {
 
         private readonly IRepository<UsuarioModel> _usuarioRepository;
+        private readonly UsuarioConverter _usuarioConverter;
 
         public PresonBusinessImplementation(IRepository<UsuarioModel> usuariorepository)
         {
             _usuarioRepository = usuariorepository;
+            _usuarioConverter = new UsuarioConverter();
         }
 
-        public UsuarioModel Create(UsuarioModel usuarioModel)
+        public UsuarioVO Create(UsuarioVO usuarioModel)
         {
-            return _usuarioRepository.Create(usuarioModel);
+            var usuarioEntity = _usuarioConverter.Parse(usuarioModel);
+            usuarioEntity = _usuarioRepository.Create(usuarioEntity);
+            return _usuarioConverter.Parse(usuarioEntity);
         }
 
         public bool Delete(int Id)
@@ -24,23 +30,21 @@ namespace RestWithASP_NET5.Business.Implementation
             return _usuarioRepository.Delete(Id);
         }
 
-        public List<UsuarioModel> FindAll()
+        public List<UsuarioVO> FindAll()
         {
-            return _usuarioRepository.FindAll();
+            return _usuarioConverter.Parse(_usuarioRepository.FindAll());
         }
 
-        public UsuarioModel FindByID(int Id)
+        public UsuarioVO FindByID(int Id)
         {
-            return _usuarioRepository.FindByID(Id);
+            return _usuarioConverter.Parse(_usuarioRepository.FindByID(Id));
         }
 
-        public UsuarioModel Update(UsuarioModel usuarioModel)
+        public UsuarioVO Update(UsuarioVO usuarioModel)
         {
-            if (!_usuarioRepository.Exists(usuarioModel.Id))
-            {
-                return new UsuarioModel();
-            }
-            return _usuarioRepository.Update(usuarioModel);
+            var usuarioEntity = _usuarioConverter.Parse(usuarioModel);
+            usuarioEntity = _usuarioRepository.Update(usuarioEntity);
+            return _usuarioConverter.Parse(usuarioEntity);
         }
     }
 }

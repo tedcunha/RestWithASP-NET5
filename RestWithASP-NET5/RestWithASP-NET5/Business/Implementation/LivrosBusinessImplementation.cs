@@ -1,23 +1,26 @@
-﻿using RestWithASP_NET5.Model;
+﻿using RestWithASP_NET5.Data.Converter.Implementations;
+using RestWithASP_NET5.Data.VO;
+using RestWithASP_NET5.Model;
 using RestWithASP_NET5.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RestWithASP_NET5.Business.Implementation
 {
     public class LivrosBusinessImplementation : ILivrosBusiness
     {
         private readonly IRepository<LivrosModel> _livrosRepository;
+        private readonly LivrosConverter _livrosConverter;
 
         public LivrosBusinessImplementation(IRepository<LivrosModel> livrosRepository)
         {
             _livrosRepository = livrosRepository;
+            _livrosConverter = new LivrosConverter();
         }
-        public LivrosModel Create(LivrosModel livrosModel)
+        public LivrosVO Create(LivrosVO livrosModel)
         {
-            return _livrosRepository.Create(livrosModel);
+            var livrosEntity = _livrosConverter.Parse(livrosModel);
+            livrosEntity = _livrosRepository.Create(livrosEntity);
+            return _livrosConverter.Parse(livrosEntity);
         }
 
         public bool Delete(int Id)
@@ -25,23 +28,21 @@ namespace RestWithASP_NET5.Business.Implementation
             return _livrosRepository.Delete(Id);
         }
 
-        public List<LivrosModel> FindAll()
+        public List<LivrosVO> FindAll()
         {
-            return _livrosRepository.FindAll();
+            return _livrosConverter.Parse(_livrosRepository.FindAll());
         }
 
-        public LivrosModel FindByID(int Id)
+        public LivrosVO FindByID(int Id)
         {
-            return _livrosRepository.FindByID(Id);
+            return _livrosConverter.Parse(_livrosRepository.FindByID(Id));
         }
 
-        public LivrosModel Update(LivrosModel livrosModel)
+        public LivrosVO Update(LivrosVO livrosModel)
         {
-            if (!_livrosRepository.Exists(livrosModel.Id))
-            {
-                return new LivrosModel();
-            }
-            return _livrosRepository.Update(livrosModel);
+            var livrosEntity = _livrosConverter.Parse(livrosModel);
+            livrosEntity = _livrosRepository.Update(livrosEntity);
+            return _livrosConverter.Parse(livrosEntity);
         }
     }
 }
