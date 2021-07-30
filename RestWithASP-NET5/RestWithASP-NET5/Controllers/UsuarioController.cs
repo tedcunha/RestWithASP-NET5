@@ -23,6 +23,10 @@ namespace RestWithASP_NET5.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+
+
+
+
             return Ok(_usuarioBusiness.FindAll());
         }
 
